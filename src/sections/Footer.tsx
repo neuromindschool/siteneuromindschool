@@ -1,13 +1,14 @@
-import { Instagram, Mail, ArrowUp } from 'lucide-react';
+import { Instagram, Mail, ArrowUp, Lock } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import Logo from '../components/Logo';
 
 const footerLinks = {
   programa: [
-    { label: 'Cursos Presenciais', href: '#' },
-    { label: 'Cursos Online', href: '#' },
-    { label: 'Mentoria', href: '#' },
-    { label: 'Palestras', href: '#' },
-    { label: 'Imersões', href: '#' },
+    { label: 'Cursos Presenciais', href: '/servico/cursos-presenciais' },
+    { label: 'Cursos Online', href: '/servico/cursos-online' },
+    { label: 'Mentoria', href: '/servico/mentoria' },
+    { label: 'Palestras', href: '/servico/palestras' },
+    { label: 'Imersões', href: '/servico/imersoes' },
   ],
   empresa: [
     { label: 'Sobre Nós', href: '#sobre' },
@@ -18,6 +19,7 @@ const footerLinks = {
   legal: [
     { label: 'Privacidade', href: '#' },
     { label: 'Termos de Uso', href: '#' },
+    { label: 'Admin', href: '/admin', icon: Lock },
   ],
 };
 
@@ -65,12 +67,12 @@ export default function Footer() {
             <ul className="space-y-3">
               {footerLinks.programa.map((link) => (
                 <li key={link.label}>
-                  <a
-                    href={link.href}
+                  <Link
+                    to={link.href}
                     className="text-neuromind-navy-secondary text-sm hover:text-neuromind-yellow transition-colors"
                   >
                     {link.label}
-                  </a>
+                  </Link>
                 </li>
               ))}
             </ul>
@@ -84,12 +86,21 @@ export default function Footer() {
             <ul className="space-y-3">
               {footerLinks.empresa.map((link) => (
                 <li key={link.label}>
-                  <a
-                    href={link.href}
-                    className="text-neuromind-navy-secondary text-sm hover:text-neuromind-yellow transition-colors"
-                  >
-                    {link.label}
-                  </a>
+                  {link.href.startsWith('#') ? (
+                    <a
+                      href={link.href}
+                      className="text-neuromind-navy-secondary text-sm hover:text-neuromind-yellow transition-colors"
+                    >
+                      {link.label}
+                    </a>
+                  ) : (
+                    <Link
+                      to={link.href}
+                      className="text-neuromind-navy-secondary text-sm hover:text-neuromind-yellow transition-colors"
+                    >
+                      {link.label}
+                    </Link>
+                  )}
                 </li>
               ))}
             </ul>
@@ -103,12 +114,13 @@ export default function Footer() {
             <ul className="space-y-3">
               {footerLinks.legal.map((link) => (
                 <li key={link.label}>
-                  <a
-                    href={link.href}
-                    className="text-neuromind-navy-secondary text-sm hover:text-neuromind-yellow transition-colors"
+                  <Link
+                    to={link.href}
+                    className="text-neuromind-navy-secondary text-sm hover:text-neuromind-yellow transition-colors flex items-center gap-2"
                   >
+                    {link.icon && <link.icon className="w-3 h-3" />}
                     {link.label}
-                  </a>
+                  </Link>
                 </li>
               ))}
             </ul>
