@@ -2,8 +2,10 @@ import { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { useBrandingStore } from './lib/store';
 
 import Navigation from './sections/Navigation';
+// ... rest of imports
 import Hero from './sections/Hero';
 import Proposition from './sections/Proposition';
 import Vertentes from './sections/Vertentes';
@@ -51,6 +53,23 @@ function MainSite() {
 }
 
 function App() {
+  const { initialize, isLoading } = useBrandingStore();
+
+  useEffect(() => {
+    initialize();
+  }, [initialize]);
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-neuromind-white">
+        <div className="flex flex-col items-center gap-4">
+          <div className="w-12 h-12 border-4 border-neuromind-yellow border-t-transparent rounded-full animate-spin"></div>
+          <p className="text-neuromind-navy font-medium animate-pulse">Carregando experiência...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <Router>
       <Routes>
@@ -63,3 +82,4 @@ function App() {
 }
 
 export default App;
+

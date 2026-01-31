@@ -56,23 +56,36 @@ export default function Admin() {
         setLocalContent(prev => ({ ...prev, [field]: value }));
     };
 
-    const handleSave = () => {
-        // Save Images
-        store.setLogoUrl(selectedLogo);
-        store.setAccentUrl(selectedAccent);
-        store.setFounder1Url(selectedF1);
-        store.setFounder2Url(selectedF2);
-        store.setFounder3Url(selectedF3);
-        store.setHqPhoto1Url(selectedHQ1);
-        store.setHqPhoto2Url(selectedHQ2);
-        store.setHqPhoto3Url(selectedHQ3);
+    const [isSaving, setIsSaving] = useState(false);
 
-        // Save Content
-        Object.entries(content).forEach(([field, value]) => {
-            store.setContent(field as any, value);
-        });
+    const handleSave = async () => {
+        setIsSaving(true);
+        try {
+            // Save Images locally
+            store.setLogoUrl(selectedLogo);
+            store.setAccentUrl(selectedAccent);
+            store.setFounder1Url(selectedF1);
+            store.setFounder2Url(selectedF2);
+            store.setFounder3Url(selectedF3);
+            store.setHqPhoto1Url(selectedHQ1);
+            store.setHqPhoto2Url(selectedHQ2);
+            store.setHqPhoto3Url(selectedHQ3);
 
-        alert('Configurações atualizadas com sucesso!');
+            // Save Content locally
+            Object.entries(content).forEach(([field, value]) => {
+                store.setContent(field as any, value);
+            });
+
+            // Save to Supabase
+            await store.saveToSupabase();
+
+            alert('Configurações atualizadas com sucesso e sincronizadas com o banco de dados!');
+        } catch (error) {
+            console.error('Error saving:', error);
+            alert('Erro ao salvar no banco de dados. Tente novamente.');
+        } finally {
+            setIsSaving(false);
+        }
     };
 
     const handleReset = () => {
@@ -98,9 +111,13 @@ export default function Admin() {
                             <RefreshCw className="w-4 h-4" />
                             Descartar
                         </button>
-                        <button onClick={handleSave} className="btn-primary flex items-center gap-2 py-3 px-8 shadow-glow">
-                            <Save className="w-4 h-4" />
-                            Salvar Alterações
+                        <button
+                            onClick={handleSave}
+                            disabled={isSaving}
+                            className="btn-primary flex items-center gap-2 py-3 px-8 shadow-glow disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                            <Save className={`w-4 h-4 ${isSaving ? 'animate-spin' : ''}`} />
+                            {isSaving ? 'Salvando...' : 'Salvar Alterações'}
                         </button>
                     </div>
                 </header>
